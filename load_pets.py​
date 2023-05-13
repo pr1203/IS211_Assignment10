@@ -50,3 +50,8 @@ person_pet_data = [
     (3, 5),
     (4, 6)
 ]
+
+
+
+    # What is the purpose of the person_pet table?
+    # The purpose of this table is to match the person with the correct pet.
