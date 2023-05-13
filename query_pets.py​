@@ -1,3 +1,39 @@
+import sqlite3
 
-if __name__ == "__main__":
-    pass
+# Connect to the database
+conn = sqlite3.connect('pets.db')
+cursor = conn.cursor()
+
+while True:
+    # Ask the user for a person's ID number
+    person_id = input("Enter a person's ID number (enter -1 to exit): ")
+    if person_id == '-1':
+        break
+
+    # Check if the user exists
+    cursor.execute('SELECT * FROM person WHERE id = ?', (person_id,))
+    person = cursor.fetchone()
+
+    if person:
+        # Print out data on the person
+        print(f"{person[1]} {person[2]}, {person[3]} years old")
+
+        # Print out all the data on that person's pets
+        cursor.execute('''
+                            SELECT pet.name, pet.breed, pet.age
+                            FROM pet
+                            INNER JOIN person_pet ON pet.id = person_pet.pet_id
+                            WHERE person_pet.person_id = ?''', (person_id,))
+        pets = cursor.fetchall()
+
+        if pets:
+            for pet in pets:
+                print(f"Owned {pet[0]}, a {pet[1]}, that is {pet[2]} years old")
+        else:
+            print("No pets found for this person")
+    else:
+        print("Person not found")
+
+# Close the connection
+conn.close
+
